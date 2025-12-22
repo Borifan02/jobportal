@@ -4,7 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Job, CandidateApplication } from '@/types';
 import { useNotifications } from './NotificationContext';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = '/api';
 
 interface JobContextType {
     jobs: Job[];

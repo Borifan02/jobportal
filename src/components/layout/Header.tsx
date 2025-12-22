@@ -133,7 +133,7 @@ export default function Header() {
                                 >
                                     <div className="relative">
                                         <img
-                                            src={user.avatarUrl || `https://ui-avatars.com/api/?name=${user.fullName}&background=004eeb&color=fff`}
+                                            src={user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.fullName || 'User')}&background=004eeb&color=fff`}
                                             alt="Profile"
                                             className="w-10 h-10 rounded-xl object-cover shadow-sm bg-white"
                                         />
@@ -143,7 +143,7 @@ export default function Header() {
                                             </div>
                                         )}
                                     </div>
-                                    <span className="hidden xl:block text-sm font-black text-slate-900 dark:text-white pr-2">{user.fullName.split(' ')[0]}</span>
+                                    <span className="hidden xl:block text-sm font-black text-slate-900 dark:text-white pr-2">{user.fullName?.split(' ')[0] || 'User'}</span>
                                 </button>
 
                                 <AnimatePresence>

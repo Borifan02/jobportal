@@ -63,6 +63,9 @@ export interface UserProfile {
     linkedIn?: string;
     twitter?: string;
     github?: string;
+    // Employer-specific fields
+    companySize?: string;
+    founded?: string;
 }
 
 export interface JobApplication {

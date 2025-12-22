@@ -94,6 +94,7 @@ export default function ProfilePage() {
                     onClose={() => setIsEditing(false)}
                     initialData={user.profile}
                     onSave={handleSaveProfile}
+                    userRole={user.role}
                 />
             )}
             {/* Header Banner */}
@@ -390,150 +391,298 @@ export default function ProfilePage() {
                         <div className="lg:col-span-2 space-y-8">
                             <FadeIn>
                                 <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">About Me</h2>
+                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-4">
+                                        {isEmployer ? 'Company Description' : 'About Me'}
+                                    </h2>
                                     <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                                        {user.profile.bio}
+                                        {user.profile.bio || (isEmployer ? 'No company description added yet.' : 'No personal bio added yet.')}
                                     </p>
                                 </section>
                             </FadeIn>
 
-                            <FadeIn delay={0.1}>
-                                <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-2">
-                                        <Briefcase className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Experience
-                                    </h2>
-                                    <div className="space-y-10">
-                                        {(user.profile.experience || []).length > 0 ? (
-                                            user.profile.experience.map((exp, idx) => (
-                                                <div key={exp.id} className="relative pl-8 border-l-2 border-slate-100 dark:border-slate-800 pb-2 last:pb-0 group">
-                                                    <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-2 border-blue-600 dark:border-blue-400 group-hover:scale-110 transition-transform" />
-                                                    <div className="flex flex-col md:flex-row justify-between items-start mb-2 gap-2">
-                                                        <h3 className="font-bold text-slate-900 dark:text-white text-lg">{exp.title}</h3>
-                                                        <span className="text-xs font-bold bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50">
-                                                            {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
-                                                        </span>
+                            {isEmployer ? (
+                                // Employer Overview Content
+                                <>
+                                    <FadeIn delay={0.1}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-2">
+                                                <Briefcase className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Recent Job Postings
+                                            </h2>
+                                            <div className="space-y-4">
+                                                {jobs.filter((j: any) => (j.employer?.toString() === user?.id || j.employer === user?.id)).slice(0, 3).length > 0 ? (
+                                                    jobs.filter((j: any) => (j.employer?.toString() === user?.id || j.employer === user?.id)).slice(0, 3).map((job: any) => (
+                                                        <div key={job.id || job._id} className="border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                                                            <h3 className="font-bold text-slate-900 dark:text-white mb-1">{job.title}</h3>
+                                                            <p className="text-slate-600 dark:text-slate-400 text-sm mb-2">{job.location} • {job.type}</p>
+                                                            <p className="text-slate-500 dark:text-slate-500 text-xs">Posted {job.postedAt || 'Recently'}</p>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <div className="text-center py-8">
+                                                        <Briefcase className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+                                                        <p className="text-slate-500 dark:text-slate-400 mb-4">No job postings yet</p>
+                                                        <Link href="/employer/post-job" className="text-blue-600 dark:text-blue-400 hover:underline font-medium">
+                                                            Post your first job
+                                                        </Link>
                                                     </div>
-                                                    <p className="text-blue-600 dark:text-blue-400 font-bold mb-3">{exp.company}</p>
-                                                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{exp.description}</p>
+                                                )}
+                                            </div>
+                                            {jobs.filter((j: any) => (j.employer?.toString() === user?.id || j.employer === user?.id)).length > 3 && (
+                                                <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800">
+                                                    <button
+                                                        onClick={() => setActiveTab('my-jobs' as EmployerTab)}
+                                                        className="text-blue-600 dark:text-blue-400 hover:underline font-medium text-sm"
+                                                    >
+                                                        View all {jobs.filter((j: any) => (j.employer?.toString() === user?.id || j.employer === user?.id)).length} jobs →
+                                                    </button>
                                                 </div>
-                                            ))
-                                        ) : (
-                                            <p className="text-slate-500 italic py-4">No experience added yet. Click "Edit Profile" to add your work history.</p>
-                                        )}
-                                    </div>
-                                </section>
-                            </FadeIn>
+                                            )}
+                                        </section>
+                                    </FadeIn>
 
-                            <FadeIn delay={0.2}>
-                                <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
-                                    <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-2">
-                                        <GraduationCap className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Education
-                                    </h2>
-                                    <div className="space-y-8">
-                                        {(user.profile.education || []).length > 0 ? (
-                                            user.profile.education.map(edu => (
-                                                <div key={edu.id} className="flex gap-5 group">
-                                                    <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700/50 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                                        <GraduationCap className="w-7 h-7" />
-                                                    </div>
-                                                    <div>
-                                                        <h3 className="font-bold text-slate-900 dark:text-white text-lg">{edu.school}</h3>
-                                                        <p className="text-slate-600 dark:text-slate-400 font-medium">{edu.degree}, {edu.field}</p>
-                                                        <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">{edu.startDate} - {edu.endDate}</p>
-                                                    </div>
+                                    <FadeIn delay={0.2}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+                                                <MapPin className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Company Details
+                                            </h2>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div>
+                                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 block">Industry</label>
+                                                    <p className="text-slate-900 dark:text-white">{user.profile.industry || 'Not specified'}</p>
                                                 </div>
-                                            ))
-                                        ) : (
-                                            <p className="text-slate-500 italic py-4">No education added yet. Click "Edit Profile" to add your academic background.</p>
-                                        )}
-                                    </div>
-                                </section>
-                            </FadeIn>
+                                                <div>
+                                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 block">Company Size</label>
+                                                    <p className="text-slate-900 dark:text-white">{user.profile.companySize || 'Not specified'}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 block">Founded</label>
+                                                    <p className="text-slate-900 dark:text-white">{user.profile.founded || 'Not specified'}</p>
+                                                </div>
+                                                <div>
+                                                    <label className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 block">Headquarters</label>
+                                                    <p className="text-slate-900 dark:text-white">{user.profile.location || 'Not specified'}</p>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </FadeIn>
+                                </>
+                            ) : (
+                                // Job Seeker Overview Content
+                                <>
+                                    <FadeIn delay={0.1}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-2">
+                                                <Briefcase className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Experience
+                                            </h2>
+                                            <div className="space-y-10">
+                                                {(user.profile.experience || []).length > 0 ? (
+                                                    user.profile.experience.map((exp, idx) => (
+                                                        <div key={exp.id} className="relative pl-8 border-l-2 border-slate-100 dark:border-slate-800 pb-2 last:pb-0 group">
+                                                            <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-white dark:bg-slate-900 border-2 border-blue-600 dark:border-blue-400 group-hover:scale-110 transition-transform" />
+                                                            <div className="flex flex-col md:flex-row justify-between items-start mb-2 gap-2">
+                                                                <h3 className="font-bold text-slate-900 dark:text-white text-lg">{exp.title}</h3>
+                                                                <span className="text-xs font-bold bg-blue-50 dark:bg-blue-900/30 px-3 py-1.5 rounded-full text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50">
+                                                                    {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-blue-600 dark:text-blue-400 font-bold mb-3">{exp.company}</p>
+                                                            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{exp.description}</p>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-slate-500 italic py-4">No experience added yet. Click "Edit Profile" to add your work history.</p>
+                                                )}
+                                            </div>
+                                        </section>
+                                    </FadeIn>
+
+                                    <FadeIn delay={0.2}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-8 flex items-center gap-2">
+                                                <GraduationCap className="w-5 h-5 text-blue-600 dark:text-blue-400" /> Education
+                                            </h2>
+                                            <div className="space-y-8">
+                                                {(user.profile.education || []).length > 0 ? (
+                                                    user.profile.education.map(edu => (
+                                                        <div key={edu.id} className="flex gap-5 group">
+                                                            <div className="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-400 dark:text-slate-500 border border-slate-100 dark:border-slate-700/50 group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                                <GraduationCap className="w-7 h-7" />
+                                                            </div>
+                                                            <div>
+                                                                <h3 className="font-bold text-slate-900 dark:text-white text-lg">{edu.school}</h3>
+                                                                <p className="text-slate-600 dark:text-slate-400 font-medium">{edu.degree}, {edu.field}</p>
+                                                                <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">{edu.startDate} - {edu.endDate}</p>
+                                                            </div>
+                                                        </div>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-slate-500 italic py-4">No education added yet. Click "Edit Profile" to add your academic background.</p>
+                                                )}
+                                            </div>
+                                        </section>
+                                    </FadeIn>
+                                </>
+                            )}
                         </div>
 
                         {/* Sidebar Info */}
                         <div className="space-y-8">
-                            <FadeIn delay={0.3}>
-                                <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
-                                    <h2 className="font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">Skills</h2>
-                                    <div className="flex flex-wrap gap-2.5">
-                                        {(user.profile.skills || []).length > 0 ? (
-                                            user.profile.skills.map(skill => (
-                                                <span key={skill} className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-xl text-sm font-bold border border-slate-100 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-800 transition-colors">
-                                                    {skill}
-                                                </span>
-                                            ))
-                                        ) : (
-                                            <p className="text-slate-500 text-sm italic">No skills added yet.</p>
-                                        )}
-                                    </div>
-                                </section>
-                            </FadeIn>
+                            {isEmployer ? (
+                                // Employer Sidebar
+                                <>
+                                    <FadeIn delay={0.3}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">Quick Stats</h2>
+                                            <div className="space-y-4">
+                                                <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                                                    <span className="text-slate-600 dark:text-slate-400 font-medium">Active Jobs</span>
+                                                    <span className="font-bold text-slate-900 dark:text-white text-lg">
+                                                        {jobs.filter((j: any) => (j.employer?.toString() === user?.id || j.employer === user?.id)).length}
+                                                    </span>
+                                                </div>
+                                                <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                                                    <span className="text-slate-600 dark:text-slate-400 font-medium">Total Applications</span>
+                                                    <span className="font-bold text-slate-900 dark:text-white text-lg">0</span>
+                                                </div>
+                                                <div className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                                                    <span className="text-slate-600 dark:text-slate-400 font-medium">Profile Views</span>
+                                                    <span className="font-bold text-slate-900 dark:text-white text-lg">-</span>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </FadeIn>
 
-                            {/* Social Media Links */}
-                            <FadeIn delay={0.35}>
-                                <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
-                                    <h2 className="font-bold text-slate-900 dark:text-white mb-6">Connect With Me</h2>
-                                    <div className="space-y-4">
-                                        {user.profile.linkedIn ? (
-                                            <a
-                                                href={user.profile.linkedIn}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group border border-transparent hover:border-blue-100 dark:hover:border-blue-900/30"
-                                            >
-                                                <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                                    <Linkedin className="w-6 h-6" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-bold text-slate-900 dark:text-white">LinkedIn</p>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">View Profile</p>
-                                                </div>
-                                            </a>
-                                        ) : null}
-                                        {user.profile.twitter ? (
-                                            <a
-                                                href={user.profile.twitter}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-all group border border-transparent hover:border-sky-100 dark:hover:border-sky-900/30"
-                                            >
-                                                <div className="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 group-hover:bg-sky-500 group-hover:text-white transition-all">
-                                                    <Twitter className="w-6 h-6" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-bold text-slate-900 dark:text-white">Twitter/X</p>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">Follow Me</p>
-                                                </div>
-                                            </a>
-                                        ) : null}
-                                        {user.profile.github ? (
-                                            <a
-                                                href={user.profile.github}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
-                                            >
-                                                <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 group-hover:bg-slate-900 dark:group-hover:bg-white dark:group-hover:text-black group-hover:text-white transition-all">
-                                                    <Github className="w-6 h-6" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-bold text-slate-900 dark:text-white">GitHub</p>
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">Check Repos</p>
-                                                </div>
-                                            </a>
-                                        ) : null}
-                                        {!user.profile.linkedIn && !user.profile.twitter && !user.profile.github && (
-                                            <p className="text-slate-500 text-sm italic py-4 text-center">No social links added yet.</p>
-                                        )}
-                                    </div>
-                                </section>
-                            </FadeIn>
+                                    <FadeIn delay={0.35}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="font-bold text-slate-900 dark:text-white mb-6">Company Links</h2>
+                                            <div className="space-y-4">
+                                                {user.profile.website ? (
+                                                    <a
+                                                        href={user.profile.website}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-4 p-4 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group border border-transparent hover:border-blue-100 dark:hover:border-blue-900/30"
+                                                    >
+                                                        <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                            <Globe className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-slate-900 dark:text-white">Company Website</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">Visit Site</p>
+                                                        </div>
+                                                    </a>
+                                                ) : null}
+                                                {user.profile.linkedIn ? (
+                                                    <a
+                                                        href={user.profile.linkedIn}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-4 p-4 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group border border-transparent hover:border-blue-100 dark:hover:border-blue-900/30"
+                                                    >
+                                                        <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                            <Linkedin className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-slate-900 dark:text-white">LinkedIn</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">Company Page</p>
+                                                        </div>
+                                                    </a>
+                                                ) : null}
+                                                {!user.profile.website && !user.profile.linkedIn && (
+                                                    <p className="text-slate-500 text-sm italic py-4 text-center">No company links added yet.</p>
+                                                )}
+                                            </div>
+                                        </section>
+                                    </FadeIn>
+                                </>
+                            ) : (
+                                // Job Seeker Sidebar
+                                <>
+                                    <FadeIn delay={0.3}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">Skills</h2>
+                                            <div className="flex flex-wrap gap-2.5">
+                                                {(user.profile.skills || []).length > 0 ? (
+                                                    user.profile.skills.map(skill => (
+                                                        <span key={skill} className="bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 px-4 py-2 rounded-xl text-sm font-bold border border-slate-100 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-800 transition-colors">
+                                                            {skill}
+                                                        </span>
+                                                    ))
+                                                ) : (
+                                                    <p className="text-slate-500 text-sm italic">No skills added yet.</p>
+                                                )}
+                                            </div>
+                                        </section>
+                                    </FadeIn>
+
+                                    {/* Social Media Links */}
+                                    <FadeIn delay={0.35}>
+                                        <section className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-6 md:p-8 shadow-sm">
+                                            <h2 className="font-bold text-slate-900 dark:text-white mb-6">Connect With Me</h2>
+                                            <div className="space-y-4">
+                                                {user.profile.linkedIn ? (
+                                                    <a
+                                                        href={user.profile.linkedIn}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-4 p-4 rounded-2xl hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all group border border-transparent hover:border-blue-100 dark:hover:border-blue-900/30"
+                                                    >
+                                                        <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                                            <Linkedin className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-slate-900 dark:text-white">LinkedIn</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">View Profile</p>
+                                                        </div>
+                                                    </a>
+                                                ) : null}
+                                                {user.profile.twitter ? (
+                                                    <a
+                                                        href={user.profile.twitter}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-4 p-4 rounded-2xl hover:bg-sky-50 dark:hover:bg-sky-900/20 transition-all group border border-transparent hover:border-sky-100 dark:hover:border-sky-900/30"
+                                                    >
+                                                        <div className="w-12 h-12 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 group-hover:bg-sky-500 group-hover:text-white transition-all">
+                                                            <Twitter className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-slate-900 dark:text-white">Twitter/X</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">Follow Me</p>
+                                                        </div>
+                                                    </a>
+                                                ) : null}
+                                                {user.profile.github ? (
+                                                    <a
+                                                        href={user.profile.github}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        className="flex items-center gap-4 p-4 rounded-2xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all group border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                                                    >
+                                                        <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 dark:text-slate-300 group-hover:bg-slate-900 dark:group-hover:bg-white dark:group-hover:text-black group-hover:text-white transition-all">
+                                                            <Github className="w-6 h-6" />
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <p className="font-bold text-slate-900 dark:text-white">GitHub</p>
+                                                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate font-medium">Check Repos</p>
+                                                        </div>
+                                                    </a>
+                                                ) : null}
+                                                {!user.profile.linkedIn && !user.profile.twitter && !user.profile.github && (
+                                                    <p className="text-slate-500 text-sm italic py-4 text-center">No social links added yet.</p>
+                                                )}
+                                            </div>
+                                        </section>
+                                    </FadeIn>
+                                </>
+                            )}
 
                             <FadeIn delay={0.4}>
                                 <section className="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-125 transition-transform duration-700"></div>
-                                    <h3 className="font-bold text-xl mb-4 flex items-center gap-2 relative">Profile Strength <CheckCircle className="w-5 h-5 text-blue-200" /></h3>
+                                    <h3 className="font-bold text-xl mb-4 flex items-center gap-2 relative">
+                                        {isEmployer ? 'Company Profile' : 'Profile Strength'} <CheckCircle className="w-5 h-5 text-blue-200" />
+                                    </h3>
                                     <div className="flex items-end gap-3 mb-4 relative">
                                         <span className="text-5xl font-extrabold">{strength}%</span>
                                         <span className="text-blue-100 mb-2 font-bold">
@@ -552,7 +701,7 @@ export default function ProfilePage() {
                                         onClick={() => setIsEditing(true)}
                                         className="w-full bg-white text-blue-600 hover:bg-blue-50 transition-all py-3 rounded-xl font-bold shadow-lg transform active:scale-[0.98] relative text-lg"
                                     >
-                                        Complete Profile
+                                        {isEmployer ? 'Complete Company Profile' : 'Complete Profile'}
                                     </button>
                                 </section>
                             </FadeIn>

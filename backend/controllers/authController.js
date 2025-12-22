@@ -90,3 +90,32 @@ exports.getProfile = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// @desc    Update user profile
+// @route   PATCH /api/auth/profile
+// @access  Private
+exports.updateProfile = async (req, res) => {
+    try {
+        const { profile, avatarUrl } = req.body;
+        const user = await User.findById(req.user._id);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update profile fields if provided
+        if (profile) {
+            user.profile = { ...user.profile, ...profile };
+        }
+
+        // Update avatar if provided
+        if (avatarUrl) {
+            user.avatarUrl = avatarUrl;
+        }
+
+        const updatedUser = await user.save();
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

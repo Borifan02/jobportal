@@ -10,12 +10,15 @@ interface EditProfileModalProps {
     onClose: () => void;
     initialData: UserProfile;
     onSave: (data: UserProfile) => Promise<void>;
+    userRole?: string; // Add user role prop
 }
 
-export default function EditProfileModal({ isOpen, onClose, initialData, onSave }: EditProfileModalProps) {
+export default function EditProfileModal({ isOpen, onClose, initialData, onSave, userRole }: EditProfileModalProps) {
     const [formData, setFormData] = useState<UserProfile>(initialData);
     const [skillsInput, setSkillsInput] = useState(initialData.skills.join(', '));
     const [isLoading, setIsLoading] = useState(false);
+    
+    const isEmployer = userRole === 'employer' || userRole === 'admin';
 
     useEffect(() => {
         if (isOpen) {
@@ -112,7 +115,9 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                 className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden relative z-10 border border-slate-200 dark:border-slate-800 my-4"
             >
                 <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/30 flex-shrink-0">
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">Edit Profile</h2>
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+                        {isEmployer ? 'Edit Company Profile' : 'Edit Profile'}
+                    </h2>
                     <button onClick={onClose} className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300 transition-colors">
                         <X className="w-5 h-5" />
                     </button>
@@ -121,19 +126,23 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                 <form onSubmit={handleSubmit} className="flex flex-col flex-1 overflow-hidden">
                     <div className="p-6 space-y-4 overflow-y-auto flex-1 dark:bg-slate-900">
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Job Title</label>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                {isEmployer ? 'Company Name' : 'Job Title'}
+                            </label>
                             <input
                                 type="text"
                                 value={formData.title}
                                 onChange={e => setFormData({ ...formData, title: e.target.value })}
                                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all"
-                                placeholder="e.g. Senior Frontend Developer"
+                                placeholder={isEmployer ? "e.g. Tech Solutions Inc." : "e.g. Senior Frontend Developer"}
                             />
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Location</label>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    {isEmployer ? 'Headquarters' : 'Location'}
+                                </label>
                                 <input
                                     type="text"
                                     value={formData.location}
@@ -143,7 +152,9 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Phone Number</label>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                    {isEmployer ? 'Contact Number' : 'Phone Number'}
+                                </label>
                                 <input
                                     type="tel"
                                     value={formData.phoneNumber || ''}
@@ -155,7 +166,9 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Website/Portfolio(Optional)</label>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                {isEmployer ? 'Company Website' : 'Website/Portfolio'} (Optional)
+                            </label>
                             <input
                                 type="url"
                                 value={formData.website || ''}
@@ -166,31 +179,68 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Bio</label>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                {isEmployer ? 'Company Description' : 'Bio'}
+                            </label>
                             <textarea
                                 value={formData.bio}
                                 onChange={e => setFormData({ ...formData, bio: e.target.value })}
                                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all min-h-[100px]"
-                                placeholder="Tell us about your experience..."
+                                placeholder={isEmployer ? "Tell us about your company, mission, and values..." : "Tell us about your experience..."}
                             />
                         </div>
 
                         <div>
-                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Skills (comma separated)</label>
+                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">
+                                {isEmployer ? 'Industry/Specialties' : 'Skills'} (comma separated)
+                            </label>
                             <input
                                 type="text"
                                 value={skillsInput}
                                 onChange={e => setSkillsInput(e.target.value)}
                                 className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all"
-                                placeholder="React, TypeScript, Node.js"
+                                placeholder={isEmployer ? "Technology, Healthcare, Finance" : "React, TypeScript, Node.js"}
                             />
                         </div>
+
+                        {isEmployer && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Company Size</label>
+                                    <select
+                                        value={formData.companySize || ''}
+                                        onChange={e => setFormData({ ...formData, companySize: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all"
+                                    >
+                                        <option value="">Select company size</option>
+                                        <option value="1-10">1-10 employees</option>
+                                        <option value="11-50">11-50 employees</option>
+                                        <option value="51-200">51-200 employees</option>
+                                        <option value="201-500">201-500 employees</option>
+                                        <option value="501-1000">501-1000 employees</option>
+                                        <option value="1000+">1000+ employees</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-1.5">Founded Year</label>
+                                    <input
+                                        type="number"
+                                        min="1800"
+                                        max={new Date().getFullYear()}
+                                        value={formData.founded || ''}
+                                        onChange={e => setFormData({ ...formData, founded: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all"
+                                        placeholder="e.g. 2010"
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         {/* Social Media Links */}
                         <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
                             <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 mb-4 flex items-center gap-2">
                                 <span className="w-1 h-4 bg-blue-600 rounded-full"></span>
-                                Social Media Links
+                                {isEmployer ? 'Company Links' : 'Social Media Links'}
                             </h3>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
@@ -200,50 +250,55 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                                         value={formData.linkedIn || ''}
                                         onChange={e => setFormData({ ...formData, linkedIn: e.target.value })}
                                         className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all text-sm"
-                                        placeholder="https://linkedin.com/in/..."
+                                        placeholder={isEmployer ? "https://linkedin.com/company/..." : "https://linkedin.com/in/..."}
                                     />
                                 </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Twitter/X</label>
-                                    <input
-                                        type="url"
-                                        value={formData.twitter || ''}
-                                        onChange={e => setFormData({ ...formData, twitter: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all text-sm"
-                                        placeholder="https://twitter.com/..."
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">GitHub</label>
-                                    <input
-                                        type="url"
-                                        value={formData.github || ''}
-                                        onChange={e => setFormData({ ...formData, github: e.target.value })}
-                                        className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all text-sm"
-                                        placeholder="https://github.com/..."
-                                    />
-                                </div>
+                                {!isEmployer && (
+                                    <>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">Twitter/X</label>
+                                            <input
+                                                type="url"
+                                                value={formData.twitter || ''}
+                                                onChange={e => setFormData({ ...formData, twitter: e.target.value })}
+                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all text-sm"
+                                                placeholder="https://twitter.com/..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-600 dark:text-slate-400 mb-1.5 uppercase tracking-wider">GitHub</label>
+                                            <input
+                                                type="url"
+                                                value={formData.github || ''}
+                                                onChange={e => setFormData({ ...formData, github: e.target.value })}
+                                                className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900/30 outline-none transition-all text-sm"
+                                                placeholder="https://github.com/..."
+                                            />
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
 
-                        {/* Experience Section */}
-                        <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
-                            <div className="flex items-center justify-between mb-6">
-                                <div>
-                                    <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                        <Briefcase className="w-5 h-5 text-blue-600" />
-                                        Work Experience
-                                    </h3>
-                                    <p className="text-xs text-slate-500 mt-0.5">Add your professional history</p>
+                        {/* Experience Section - Only for Job Seekers */}
+                        {!isEmployer && (
+                            <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center justify-between mb-6">
+                                    <div>
+                                        <h3 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                            <Briefcase className="w-5 h-5 text-blue-600" />
+                                            Work Experience
+                                        </h3>
+                                        <p className="text-xs text-slate-500 mt-0.5">Add your professional history</p>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={addExperience}
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl text-sm font-bold hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all border border-blue-100 dark:border-blue-800/50"
+                                    >
+                                        <Plus className="w-4 h-4" /> Add
+                                    </button>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={addExperience}
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl text-sm font-bold hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-all border border-blue-100 dark:border-blue-800/50"
-                                >
-                                    <Plus className="w-4 h-4" /> Add
-                                </button>
-                            </div>
 
                             <div className="space-y-6">
                                 {(formData.experience || []).map((exp, index) => (
@@ -325,8 +380,10 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                                 )}
                             </div>
                         </div>
+                        )}
 
-                        {/* Education Section */}
+                        {/* Education Section - Only for Job Seekers */}
+                        {!isEmployer && (
                         <div className="pt-6 border-t border-slate-100 dark:border-slate-800">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
@@ -396,6 +453,7 @@ export default function EditProfileModal({ isOpen, onClose, initialData, onSave 
                                 )}
                             </div>
                         </div>
+                        )}
                     </div>
 
                     <div className="p-6 border-t border-slate-100 dark:border-slate-800 flex gap-3 flex-shrink-0 bg-slate-50/50 dark:bg-slate-800/30">

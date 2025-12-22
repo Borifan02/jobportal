@@ -38,6 +38,9 @@ const UserSchema = new mongoose.Schema({
         linkedIn: String,
         twitter: String,
         github: String,
+        // Employer-specific fields
+        companySize: String,
+        founded: String,
         experience: [{
             title: String,
             company: String,

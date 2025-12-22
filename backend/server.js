@@ -6,33 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Load environment variables
-const envPath = path.join(__dirname, 'config.env');
-try {
-    const envFile = fs.readFileSync(envPath, 'utf8');
-    envFile.split(/\r?\n/).forEach(line => {
-        const trimmedLine = line.trim();
-        if (trimmedLine && !trimmedLine.startsWith('#') && trimmedLine.includes('=')) {
-            const [key, ...valueParts] = trimmedLine.split('=');
-            const value = valueParts.join('=').trim();
-            if (key && value) {
-                process.env[key.trim()] = value;
-            }
-        }
-    });
-} catch (error) {
-    console.warn('Could not load config.env, using defaults:', error.message);
-}
-
-// Fallback to default values if not set
-if (!process.env.JWT_SECRET) {
-    process.env.JWT_SECRET = 'your_super_secret_key_12345';
-}
-if (!process.env.PORT) {
-    process.env.PORT = '5000';
-}
-if (!process.env.MONGODB_URI) {
-    process.env.MONGODB_URI = 'mongodb://localhost:27017/jobportal';
-}
+dotenv.config();
 
 const app = express();
 
@@ -52,7 +26,7 @@ app.get('/', (req, res) => {
 });
 
 // Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/jobportal';
+const MONGODB_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/jobportal';
 mongoose.connect(MONGODB_URI)
     .then(() => console.log('Successfully connected to MongoDB.'))
     .catch((err) => console.error('MongoDB connection error:', err));
