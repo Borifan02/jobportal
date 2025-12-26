@@ -1,182 +1,225 @@
-JobPortal 🚀
+# 🚀 JobPortal
 
-A full-stack, production-ready Job Search Platform built with the MERN Stack (MongoDB, Express.js, React, Node.js).
-Designed to demonstrate modern web development, scalable architecture, authentication, and real-world job marketplace workflows.
+A **full-stack, production-ready Job Search Platform** built with the **MERN Stack (MongoDB, Express.js, React, Node.js)**.
 
-✨ Features
-🔍 Job Search & Discovery
+Designed to demonstrate **modern web development**, **scalable architecture**, **secure authentication**, and **real‑world job marketplace workflows**.
 
-Advanced job search with filters (location, job type, experience level, keywords)
+---
 
-Real-time search results with optimized queries
+## ✨ Features
 
-Save jobs for later review
+### 🔍 Job Search & Discovery
 
-🔐 Authentication & Authorization
+* Advanced job search with filters:
 
-Secure authentication using JWT
+  * Location
+  * Job type
+  * Experience level
+  * Keywords
+* Real-time search results with optimized queries
+* Save jobs for later review
 
-Role-based access control:
+---
 
-Job Seeker
+### 🔐 Authentication & Authorization
 
-Employer
+* Secure authentication using **JWT**
+* Role-based access control:
 
-Admin
+  * **Job Seeker**
+  * **Employer**
+  * **Admin**
+* OAuth-ready architecture (Google / GitHub can be added)
 
-OAuth-ready architecture (Google / GitHub support can be added)
+---
 
-👤 Candidate Dashboard
+### 👤 Candidate Dashboard
 
-Manage personal profile and resume
+* Manage personal profile and resume
+* Track applied jobs and application status
+* Save and manage favorite jobs
 
-Track applied jobs and application status
+---
 
-Save and manage favorite jobs
+### 🏢 Employer Dashboard
 
-🏢 Employer Dashboard
+* Post, edit, and delete job listings
+* View applicants per job
+* Manage application stages:
 
-Post, edit, and delete job listings
+  * Screening
+  * Interview
+  * Offer
+  * Rejected
 
-View applicants per job
+---
 
-Manage application stages:
+### 🛡️ Admin Panel
 
-Screening
+* Manage users and employers
+* Moderate job postings
+* Platform-wide analytics and control
 
-Interview
+---
 
-Offer
+### 🎨 Premium UI/UX
 
-Rejected
+* Fully responsive (mobile, tablet, desktop)
+* Clean, modern design inspired by **LinkedIn** & **Indeed**
+* Smooth animations and transitions
+* Accessible and user-friendly interfaces
 
-🛡️ Admin Panel
+---
 
-Manage users and employers
+## 🛠️ Technology Stack (MERN)
 
-Moderate job postings
+### Frontend
 
-Platform-wide analytics and control
+* **React.js** (modern hooks)
+* **Tailwind CSS** – utility-first styling
+* **Framer Motion** – animations
+* **Lucide React** – icons
+* **Axios** – API communication
+* **TypeScript** (optional but recommended)
 
-🎨 Premium UI/UX
+---
 
-Fully responsive (mobile, tablet, desktop)
+### Backend
 
-Clean, modern design inspired by LinkedIn & Indeed
+* **Node.js**
+* **Express.js**
+* **MongoDB** with **Mongoose**
+* **JWT Authentication**
+* **bcrypt** for password hashing
+* **RESTful API** architecture
 
-Smooth animations and transitions
+---
 
-Accessible and user-friendly interfaces
+### Database
 
-🛠️ Technology Stack (MERN)
-Frontend
+* **MongoDB Atlas** (Cloud Database)
 
-React.js (with modern hooks)
+---
 
-Tailwind CSS – utility-first styling
+## 🏗️ System Architecture
 
-Framer Motion – animations
-
-Lucide React – icons
-
-Axios – API communication
-
-TypeScript (optional but recommended)
-
-Backend
-
-Node.js
-
-Express.js
-
-MongoDB with Mongoose
-
-JWT Authentication
-
-bcrypt for password hashing
-
-RESTful API architecture
-
-Database
-
-MongoDB Atlas (Cloud Database)
-
-System Architecture
+```text
 Client (React)
    ↓
 REST API (Express + Node)
    ↓
 Database (MongoDB)
+```
 
-Key Architectural Decisions
+### Key Architectural Decisions
 
-RESTful APIs for scalable backend communication
+* RESTful APIs for scalable backend communication
+* JWT-based authentication for stateless security
+* MVC-like folder structure for maintainability
+* Reusable UI components following best frontend practices
+* Environment-based configuration using `.env`
 
-JWT-based authentication for stateless security
+---
 
-MVC-like folder structure for maintainability
+## 📥 Installation & Setup
 
-Reusable UI components following best frontend practices
+### Clone Repository
 
-Environment-based configuration using .env
-
-
-Clone Repository
+```bash
 git clone https://github.com/Borifan02/jobportal.git
 cd jobportal
-Backend Setup
+```
+
+---
+
+### Backend Setup
+
+```bash
 cd backend
 npm install
-npm run dev
+```
 
-Create a .env file:
+Create a `.env` file in the `backend` folder:
+
+```env
 MONGO_URI=your_mongodb_uri
 JWT_SECRET=your_secret_key
 PORT=5000
+```
+
+Run backend server:
+
+```bash
 npm run dev
-Open:
-👉 http://localhost:3000
-📊 Deployment
-Frontend
+```
 
-Vercel / Netlify
+---
 
-Backend
+### Frontend Setup
 
-Render, Railway, or AWS
+```bash
+cd frontend
+npm install
+npm start
+```
 
-Database
+Open in browser:
+👉 **[http://localhost:3000](http://localhost:3000)**
 
-MongoDB Atlas
+---
 
-⚠️ Current Limitations (Planned Improvements)
+## 📊 Deployment
 
-Real-time notifications (WebSockets)
+### Frontend
 
-Resume file upload (Cloudinary / Firebase Storage)
+* Vercel
+* Netlify
 
-Advanced analytics dashboard
+### Backend
 
-Email notifications (Nodemailer)
+* Render
+* Railway
+* AWS
 
-OAuth login (Google & GitHub)
+### Database
 
-🎯 Purpose of This Project
+* MongoDB Atlas
+
+---
+
+## ⚠️ Current Limitations (Planned Improvements)
+
+* Real-time notifications (WebSockets)
+* Resume file upload (Cloudinary / Firebase Storage)
+* Advanced analytics dashboard
+* Email notifications (Nodemailer)
+* OAuth login (Google & GitHub)
+
+---
+
+## 🎯 Purpose of This Project
 
 This project was built to:
 
-Demonstrate full-stack MERN development
+* Demonstrate full-stack MERN development
+* Showcase real-world job portal workflows
+* Highlight clean architecture, security, and scalability
+* Serve as a **portfolio project** for:
 
-Showcase real-world job portal workflows
+  * Internships
+  * Freelance work
+  * Full-time roles
 
-Highlight clean architecture, security, and scalability
+---
 
-Serve as a portfolio project for internships, freelance work, and full-time roles
+## 👨‍💻 Author
 
-👨‍💻 Author
-
-Borifan Dabasa
+**Borifan Dabasa**
 Full-Stack Developer
-🔗 GitHub: https://github.com/Borifan02
 
-🔗 LinkedIn: https://www.linkedin.com/in/borifan-dabasa-a5191036b
+* 🔗 GitHub: [https://github.com/Borifan02](https://github.com/Borifan02)
+* 🔗 LinkedIn: [https://www.linkedin.com/in/borifan-dabasa-a5191036b](https://www.linkedin.com/in/borifan-dabasa-a5191036b)
+
+---
+
+⭐ *If you like this project, please consider giving it a star!*
